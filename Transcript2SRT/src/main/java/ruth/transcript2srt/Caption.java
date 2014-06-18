@@ -117,8 +117,12 @@ public class Caption {
         long startMilliseconds = startTimeAnchor.getTime();
         long endMilliseconds = endTimeAnchor.getTime();
         //calculate the average caption duration (timePerCaption)
-        long span = endMilliseconds - startMilliseconds;
+        long span = endMilliseconds - startMilliseconds;      
         long timePerCaption = span/((long) numCaptions);
+        //print out warning if caption duration is less than 2 seconds
+        if (timePerCaption < (long) 2) {
+            System.out.println("Caption less than 2 seconds long starting at time "+startTimeAnchor+" and ending at "+endTimeAnchor);
+        }
         //intialize timestamp array
         Time[] captionTimes = new Time[numCaptions+1];
         //currentCaption time is incremented by the average caption duration

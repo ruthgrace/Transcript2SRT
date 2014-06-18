@@ -29,15 +29,15 @@ public class Transcript2SRT {
     private ArrayList<Caption> captions;
     private ArrayList<TimeAnchor> timeAnchors;
     private HashSet<String> PREPOSITIONS;
-    private final int CAPTIONLENGTH = 43;
+    private final int CAPTIONLENGTH = 32;
     
     public static void main (String[] args) {
         Transcript2SRT t = new Transcript2SRT();
         //hard-coded text file to be converted, and filepath of output
-        t.convert2SRT("/home/ruthgrace/Desktop/transcription.txt","/home/ruthgrace/Desktop/transcription.srt");
+        t.convert2SRT("/home/ruthgrace/Desktop/A1415780.txt","/home/ruthgrace/Desktop/A1415780.srt");
     }
     /**
-     * Constuctor.
+     * Constructor.
      * Initializes captions, time anchors, and preposition lists.
      */
     public Transcript2SRT() {
@@ -139,7 +139,8 @@ public class Transcript2SRT {
                 }
                 //otherwise, make a list of captions out of the line
                 else {
-                    captionCounter = makeCaptions(line, ++captionCounter);
+                    captionCounter++;
+                    captionCounter = makeCaptions(line, captionCounter);
                 }
                 line = br.readLine();
             }
@@ -159,12 +160,12 @@ public class Transcript2SRT {
     * Turn a line of text into a list of SRT style captions.
     * @param line line of text transcript, representing the voice of one speaker
     * @param captionCounter integer representing index of new caption
-    * @return New caption counter value, equal to the index of the next caption
+    * @return New caption counter value, equal to the index of the last caption
     * to be added.
     */
    private int makeCaptions(String line, int captionCounter) {
        //if line is empty, return current caption size (do not process)
-       if (line.equals("")) { return this.captions.size(); }
+       if (line.equals("")) { return this.captions.size()-1; }
        //initialize index of characters in line
        int lineIndex = 0;
        //initialize size of current caption
@@ -181,7 +182,7 @@ public class Transcript2SRT {
             wordCounter = makeNextCaption(words,wordCounter,captionCounter);           
        }
        //return index of next caption to be added
-       return this.captions.size();
+       return this.captions.size()-1;
    }
    /**
     * Makes a caption with up to 2 lines of less than or equal to 43 characters
@@ -224,8 +225,8 @@ public class Transcript2SRT {
         //remove trailing space of first line
         firstLine = firstLine.substring(0,firstLine.length()-1);
         //remove a single trailing preposition
-        //  if the line is greater than 30 characters
-        if (captionLength - 1 - words[wordCounter].length() > 30 && this.PREPOSITIONS.contains(words[wordCounter-1])) {
+        //  if the line is greater than 10 characters below max caption length
+        if (captionLength - 1 - words[wordCounter].length() > CAPTIONLENGTH-10 && this.PREPOSITIONS.contains(words[wordCounter-1])) {
             wordCounter--;
             firstLine = firstLine.substring(0,firstLine.length()-words[wordCounter].length());
         }
